@@ -17,6 +17,10 @@
 # include <cctype>
 # include <ctime>
 
+# include "server.hpp"
+# include "user.hpp"
+# include "error_msg.hpp"
+
 typedef struct s_IRCMessage {
     std::string prefix;
     std::string command;
