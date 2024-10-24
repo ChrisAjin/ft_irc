@@ -17,7 +17,11 @@
 # include <cctype>
 # include <ctime>
 
-# include "server.hpp"
+#include <map>
+#include <netinet/in.h>
+#include <cstring>
+
+# include "serverchris.hpp"
 # include "user.hpp"
 # include "error_msg.hpp"
 
