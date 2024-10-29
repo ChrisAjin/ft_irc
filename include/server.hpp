@@ -31,6 +31,21 @@ class server
         /* GET USER */
         user                     *_Get_user_by_fd(int fd);
 
+    /*********/
+    /*PRIVATE ihibti PART*/
+    /*********/
+    std::vector<struct pollfd> poll_fds;
+    std::map<int, user> clients;
+    std::map<std::string, channel> channels;
+    int _init_server();
+    void setupServer(int &server_fd);
+    void handleNewConnection(int server_fd);
+    void handleClientMessage(int client_fd);
+    void authenticateClient(user &client, const std::string &message);
+    void joinChannel(user &client, const std::string &channelName);
+    void sendMessageToChannel(const std::string &channelName, const std::string &message, int sender_fd);
+    void handleOperatorCommand(user &client, const std::string &command);
+
        
     public:
 

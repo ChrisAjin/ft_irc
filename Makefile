@@ -10,7 +10,7 @@ vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)
 
 # library -----------------------------------------------------------
 
-SRC			=	main.cpp utils.cpp 
+SRC			=	main.cpp utils.cpp user.cpp server.cpp channel.cpp
 
 INC			=	./incl
 
