@@ -1,18 +1,31 @@
-# include "../include/utils.hpp"
+#include "../includes/server.hpp"
 
-extern bool g_stop;
+int	main(int argc, char **argv)
+{
+	Server	serv;
 
-// void    Sig(int sig) {
-//     (void) sig;
-//     g_stop = 0;
-// }
-
-int main(int argc, char **argv) {
-
-    if (parsing(argc, argv)) {
-        return 1;
-    }
-   // signal(SIGINT, Sig);
-    //server
-    return 0;
-};
+	if (argc != 3)
+	{
+		std::cerr << "Error: Syntax ./ircserv <port> <password>\n";
+		return (1);
+	}
+	try
+	{
+		signal(SIGINT, Server::handleSignal);
+		signal(SIGQUIT, Server::handleSignal);
+		if (!serv.isPortValid(argv[1]) || !*argv[2] || strlen(argv[2]) > 20)
+		{
+			std::cerr << "Error: Invalid port number or/and password!" << std::endl;
+			return (1);
+		}
+		serv.Init_Serveur(atoi(argv[1]), argv[2]);
+		serv.checkPollEvents();
+	}
+	catch(const std::exception& e)
+	{
+		serv.closeFd();
+		std::cerr << e.what() << std::endl;
+		return (0);
+	}
+	return (0);
+}

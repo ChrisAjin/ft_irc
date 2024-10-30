@@ -10,7 +10,7 @@ vpath %.cpp $(foreach dir, $(SRC_DIR), $(dir):)
 
 # library -----------------------------------------------------------
 
-SRC			=	main.cpp utils.cpp user.cpp server.cpp channel.cpp
+SRC			=	main.cpp server.cpp serverInit.cpp serverParse.cpp user.cpp
 
 INC			=	./incl
 
@@ -21,7 +21,7 @@ DEP			=	$(OBJ:%.o=%.d)
 # Compilation flags -------------------------------------------------
 
 CPPFLAGS			=	-Wall -Wextra -Werror -std=c++98
-IFLAGS			=	-I incl/ -I /usr/include
+IFLAGS			=	-I incl/ -I /usr/includes
 DFLAGS			=	-g -D_GLIBCXX_DEBUG
 
 # Debug conditional -------------------------------------------------
