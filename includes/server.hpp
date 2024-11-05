@@ -22,6 +22,7 @@
 #include <csignal>
 #include "user.hpp"
 #include "errorcode.hpp"
+#include "channel.hpp"
 
 #define RESET   "\033[0m"
 #define RED     "\033[31m"
@@ -30,6 +31,7 @@
 #define LARROW  "\u2B9C "
 
 class User;
+class Channel;
 
 class Server
 {
@@ -46,6 +48,7 @@ private:
     struct pollfd	new_user;
     std::vector<struct pollfd>	poll_fd;
     std::vector<User>	sock_user;
+    std::vector<Channel>	channel;
     std::map<int, std::string>	buff;
 
 public:
@@ -69,6 +72,7 @@ public:
 
     void	removeClient(int fd);
     void	removeFd(int fd);
+    void	clearChannel(int fd);
 
     void	notifyUsers(std::string message, int fd);
     void	notifyClient3(int errnum, std::string user, int fd, std::string message);

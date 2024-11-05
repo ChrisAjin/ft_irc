@@ -2,6 +2,9 @@
 #define USER_HPP
 
 #include "server.hpp"
+#include "channel.hpp"
+
+class Channel;
 
 class User
 {

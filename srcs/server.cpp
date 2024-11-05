@@ -153,7 +153,37 @@ void Server::removeFd(int fd)
 }
 // A re tester
 // Nettoie les canaux en retirant un utilisateur spécifique et en supprimant les canaux vides
+void Server::clearChannel(int fd)
+{
+    int flag;
+    std::string reply;
 
+    for (size_t i = 0; i < this->channel.size(); i++)
+    {
+        flag = 0;
+        if (channel[i].getUserByFd(fd))
+        {
+            channel[i].removeUserByFd(fd);
+            flag = 1;
+        }
+        else if (channel[i].getOperatorByFd(fd))
+        {
+            channel[i].removeOperatorByFd(fd);
+            flag = 1;
+        }
+        if (channel[i].getUserCount() == 0)
+        {
+            channel.erase(channel.begin() + i);
+            i--;
+            continue;
+        }
+        if (flag)
+        {
+            reply = ":" + getClientByFd(fd)->getNickname() + "!~" + getClientByFd(fd)->getUser() + "@localhost QUIT Quit\r\n";
+            //faire broadcast Msg
+        }
+    }
+}
 // Envoie un message à un socket spécifique (fd)
 void Server::notifyUsers(std::string message, int fd)
 {
