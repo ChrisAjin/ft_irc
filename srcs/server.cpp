@@ -1,4 +1,6 @@
 #include "../includes/server.hpp"
+#include "../includes/errorcode.hpp"
+#include "../includes/channel.hpp" 
 
 // Constructeur par défaut
 Server::Server()
@@ -207,6 +209,19 @@ bool Server::isRegistered(int fd)
         !getClientByFd(fd)->isConnected())
         return (false);
     return (true);
+}
+
+Channel* Server::getChannelByName(const std::string& name) {
+    // Find the channel in the map
+    std::map<std::string, Channel>::iterator it = channels.find(name);
+
+    // If found, return a pointer to the channel
+    if (it != channels.end()) {
+        return &(it->second);
+    }
+
+    // If not found, return nullptr
+    return NULL;
 }
 
 // Vérifie si un canal existe déjà sur le serveur
