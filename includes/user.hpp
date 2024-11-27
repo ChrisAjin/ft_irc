@@ -2,6 +2,7 @@
 #define USER_HPP
 
 #include "server.hpp"
+#include "channel.hpp"
 
 class User
 {
@@ -52,6 +53,9 @@ public:
     void setOperator(bool op);
     void setUserMode(size_t i, bool mode);
     void setRealname(std::string realname);
+    void setChannelFounder(bool founder);
+    bool isInvited(std::string &channel);
+    void removeInvitation(std::string &channel);
 
     void clearBuffer();
 

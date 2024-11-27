@@ -157,12 +157,12 @@ void Server::removeFd(int fd)
 // Nettoie les canaux en retirant un utilisateur spécifique et en supprimant les canaux vides
 
 // Envoie un message à un socket spécifique (fd)
-void Server::notifyUsers(std::string message, int fd)
-{
-    std::cout << RESET << message;
-    if (send(fd, message.c_str(), message.size(), 0) == -1)
-        std::cerr << "send() failed" << std::endl;
-}
+// void Server::notifyUsers(std::string message, int fd)
+// {
+//     std::cout << RESET << message;
+//     if (send(fd, message.c_str(), message.size(), 0) == -1)
+//         std::cerr << "send() failed" << std::endl;
+// }
 
 // Formate et envoie un message avec un code d'erreur et des informations supplémentaires
 
@@ -226,3 +226,63 @@ Channel* Server::getChannelByName(const std::string& name) {
 
 // Vérifie si un canal existe déjà sur le serveur
 
+void Server::clearChannel(int fd)
+{
+    int flag;
+    std::string reply;
+
+    for (size_t i = 0; i < this->channel.size(); i++)
+    {
+        flag = 0;
+        if (channel[i].getUserByFd(fd))
+        {
+            channel[i].removeUserByFd(fd);
+            flag = 1;
+        }
+        else if (channel[i].getOperatorByFd(fd))
+        {
+            channel[i].removeOperatorByFd(fd);
+            flag = 1;
+        }
+        if (channel[i].getUserCount() == 0)
+        {
+            channel.erase(channel.begin() + i);
+            i--;
+            continue;
+        }
+        if (flag)
+        {
+            reply = ":" + getClientByFd(fd)->getNickname() + "!~" + getClientByFd(fd)->getUser() + "@localhost QUIT Quit\r\n";
+            channel[i].broadcastMessage(reply);
+        }
+    }
+}
+
+void Server::notifyUsers(std::string message, int fd)
+{
+    std::cout << GREEN << RARROW << RESET << message;
+    if (send(fd, message.c_str(), message.size(), 0) == -1)
+        std::cerr << "send() failed" << std::endl;
+}
+
+// Formate et envoie un message avec un code d'erreur et des informations supplémentaires
+void Server::notifyClient2(int errnum, std::string user, std::string channel, int fd, std::string message)
+{
+    std::stringstream ss;
+    std::string rep;
+
+    ss << ":localhost " << errnum << " " << user << " " << channel << message;
+    rep = ss.str();
+    if (send(fd, rep.c_str(), rep.size(), 0) == -1)
+        std::cerr << "send() failed" << std::endl;
+}
+
+Channel	*Server::getChannel(std::string name)
+{
+	for (size_t i = 0; i < this->channel.size(); i++)
+	{
+		if (this->channel[i].getChannelName() == name)
+			return (&channel[i]);
+	}
+	return (NULL);
+}

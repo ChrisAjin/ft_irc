@@ -25,6 +25,7 @@
 #define ERR_WILDCARDTOPLEVEL(mask) (": 414 " + mask + " :Wildcard in top-level domain\r\n")
 #define ERR_TOOMANYRECIPIENTS(target) (": 407 " + target + " :Duplicate recipients. No message delivered\r\n")
 #define ERR_UNKNOWNCOMMAND(client, command) (": 421 " + client + " " + command + " :Unknown command\r\n")
+#define RPL_CHANGENICK(old, client) (":" + old + " NICK " + client + "\r\n")
 
 // Specific to KICK command
 #define ERR_USERNOTINCHANNEL(user, channel) (": 441 " + user + " " + channel + " :They aren't on that channel\r\n")
@@ -51,5 +52,18 @@
 #define RPL_PRIVMSGUSER(hostname, ipaddress, receiver, message) (":" + hostname + "@" + ipaddress + " PRIVMSG " + receiver + " :" + message + "\r\n")
 #define RPL_YOUAREOPERATOR(client) (": 381 " + client + " :You are now an IRC operator\r\n")
 #define RPL_CREATIONTIME(client, channel, createdat) ": 329 " + client + " #" + channel + " " + createdat + "\r\n"
+#define RPL_JOIN(hostname, ipaddress, channel) (":" + hostname + "@" + ipaddress + " JOIN #" + channel + "\r\n")
+#define RPL_NAMREPLY(client, channel, clientslist) (": 353 " + client + " @ #" + channel + " :" + clientslist + "\r\n")
+#define RPL_ENDOFNAMES(client, channel) (": 366 " + client + " #" + channel + " :END of /NAMES list\r\n")
+#define RPL_TOPICWHOTIME(client, channel, nick, setat) (": 333 " + client + " #" + channel + " " + nick + " " + setat + "\r\n")
+#define RPL_TOPIC(client, channel, topic) (": 332 " + client + " #" + channel + " :" + topic + "\r\n")
+#define RPL_NOTOPICSET(channel) (": 331 " + channel + " :No topic is set.\r\n")
+#define RPL_YOUAREOPERATOR(client) (": 381 " + client + " :You are now an IRC operator\r\n")
+#define RPL_CHANNELMODE(client, channel, mode) ": 324 " + client + " #" + channel + " " + mode + "\r\n"
+#define RPL_CREATIONTIME(client, channel, createdat) ": 329 " + client + " #" + channel + " " + createdat + "\r\n"
+#define RPL_CHANGEMODE(hostname, channel, mode, arguments) (":" + hostname + " MODE #" + channel + " " + mode + " " + arguments + "\r\n")
+#define RPL_INVITE(client, nickname, channel) (": 341 " + client + " invite " + nickname + " to #" + channel + "\r\n")
+#define RPL_PRIVMSGCHANNEL(hostname, ipaddress, receiver, message) (":" + hostname + "@" + ipaddress + " PRIVMSG " + "#" + receiver + " " + message + "\r\n")
+#define RPL_PRIVMSGUSER(hostname, ipaddress, receiver, message) (":" + hostname + "@" + ipaddress + " PRIVMSG " + receiver + " " + message + "\r\n")
 
 #endif // ERRORCODE_HPP

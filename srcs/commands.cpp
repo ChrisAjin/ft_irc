@@ -1,6 +1,7 @@
 #include "../includes/server.hpp"
 #include"../includes/errorcode.hpp"
 #include"../includes/channel.hpp"
+
 //des erreurs car no channel atm
 
 void Server::kickUser(int fd, const std::string &channelName, const std::string &targetUserName, const std::string &reason)
@@ -54,13 +55,6 @@ void Server::inviteUser(int fd, const std::string &channelName, const std::strin
 
     channel->addInvite(targetFd);
     notifyUsers(":" + getClientByFd(fd)->getNickname() + " INVITE " + targetUserName + " " + channelName + "\r\n", -1);
-}
-
-void Server::notifyUsers(std::string message, int fd)
-{
-    std::cout << RESET << message;
-    if (send(fd, message.c_str(), message.size(), 0) == -1)
-        std::cerr << "send() failed" << std::endl;
 }
 
 void Server::topic(int fd, const std::string &channelName, const std::string &topic)
@@ -189,26 +183,47 @@ void Server::processCommand(std::string &command, int fd)
         return;
     }
 
+    size_t nonspace = command.find_first_not_of(" \t\v");
+    if (nonspace != std::string::npos)
+        command = command.substr(nonspace);
     std::string action = commandParts[1]; // The actual command (e.g., KICK, INVITE, etc.)
-
-    if (action == "KICK" && commandParams.size() >= 3)
+    if ((commandParts[1] == "PASS" || commandParts[1] == "pass") && commandParams.size())
+        PASS(command, fd);
+    else if ((commandParts[1] == "NICK" || commandParts[1] == "nick") && commandParams.size())
+        NICK(command, fd);
+    else if ((commandParts[1] == "USER" || commandParts[1] == "user") && commandParams.size())
+        USER(command, fd);
+    else if ((commandParts[1] == "QUIT" || commandParts[1] == "quit") && commandParams.size())
+        QUIT(command, fd);
+    else if ((commandParts[1] == "PING" || commandParts[1] == "ping") && commandParams.size())
+        PING(command, fd);
+    else if ((commandParts[1] == "CAP" || commandParts[1] == "cap") && commandParams.size())
+        return;
+    else if (isRegistered(fd) && commandParams.size())
     {
-        kickUser(fd, commandParams[0], commandParams[1], commandParams.size() > 2 ? commandParams[2] : "");
+        if (commandParts[1] == "JOIN" || commandParts[1] == "join")
+            JOIN(command, fd);
+        else if (commandParts[1] == "INVITE" || commandParts[1] == "invite")
+            inviteUser(fd, commandParams[0], commandParams[1]);
+        else if (commandParts[1] == "WHO" || commandParts[1] == "who")
+            return;
+        else if (commandParts[1] == "WHOIS" || commandParts[1] == "whois")
+            return;
+        else if (commandParts[1] == "TOPIC" || commandParts[1] == "topic")
+            topic(fd, commandParams[0], commandParams.size() > 1 ? commandParams[1] : "");
+        // else if (commandParts[1] == "PART" || commandParts[1] == "part")
+        //     PART(command, fd);
+        else if (commandParts[1] == "KICK" || commandParts[1] == "kick")
+            kickUser(fd, commandParams[0], commandParams[1], commandParams.size() > 2 ? commandParams[2] : "");
+        else if ((commandParts[1] == "MODE" || commandParts[1] == "mode") && commandParams[1][0] == '#')
+            mode(fd, commandParams[0], commandParams[1], commandParams.size() > 2 ? commandParams[2] : "");
+        else if ((commandParts[1] == "MODE" || commandParts[1] == "mode") && commandParams[1][0] != '#')
+            return;
+        // else if (commandParts[1] == "PRIVMSG" || commandParts[1] == "privmsg")
+        //     PRIVMSG(command, fd);
+        else
+            notifyUsers(ERR_UNKNOWNCOMMAND(getClientByFd(fd)->getNickname(), commandParts[1]), fd);
     }
-    else if (action == "INVITE" && commandParams.size() >= 2)
-    {
-        inviteUser(fd, commandParams[0], commandParams[1]);
-    }
-    else if (action == "TOPIC" && commandParams.size() >= 1)
-    {
-        topic(fd, commandParams[0], commandParams.size() > 1 ? commandParams[1] : "");
-    }
-    else if (action == "MODE" && commandParams.size() >= 2)
-    {
-        mode(fd, commandParams[0], commandParams[1], commandParams.size() > 2 ? commandParams[2] : "");
-    }
-    else
-    {
-        notifyUsers("Unknown command: " + action + "\r\n", fd);
-    }
+    else if (!isRegistered(fd))
+        notifyUsers(ERR_NOTREGISTERED(std::string("*")), fd);
 }

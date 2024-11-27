@@ -224,8 +224,31 @@ void User::clearBuffer()
     buff.clear();
 }
 
-// Ajoute une invitation pour un canal spécifique
-
 // Retire l'invitation quand l'utilisateur rejoint le canal
 
 
+void User::setChannelFounder(bool founder)
+{
+    this->chanFounder = founder;
+}
+bool User::isInvited(std::string &channel)
+{
+    for (size_t i = 0; i < this->invitation.size(); i++)
+    {
+        if (this->invitation[i] == channel)
+            return (true);
+    }
+    return (false);
+}
+
+void User::removeInvitation(std::string &channel)
+{
+    for (size_t i = 0; i < this->invitation.size(); i++)
+    {
+        if (this->invitation[i] == channel)
+        {
+            this->invitation.erase(this->invitation.begin() + i);
+            return;
+        }
+    }
+}

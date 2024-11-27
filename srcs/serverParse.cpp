@@ -118,30 +118,30 @@ std::vector<std::string> Server::splitBuffer(std::string buff)
     return commandParams;
 }
 // A finir 
-/*Analyse et exécute une commande IRC reçue par le serveur*/
-void Server::processCommand(std::string &message, int fd)
-{
-    std::vector<std::string> commandParams;
-    std::vector<std::string> commandParts;
+// /*Analyse et exécute une commande IRC reçue par le serveur*/
+// void Server::processCommand(std::string &message, int fd)
+// {
+//     std::vector<std::string> commandParams;
+//     std::vector<std::string> commandParts;
 
-    if (message.empty())
-        return;
+//     if (message.empty())
+//         return;
 
-    commandParts = dissectMessage(message);
+//     commandParts = dissectMessage(message);
 
-    commandParams = extractParams(message);
+//     commandParams = extractParams(message);
 
-    size_t nonspace = message.find_first_not_of(" \t\v");
-    if (nonspace != std::string::npos)
-        message = message.substr(nonspace);
+//     size_t nonspace = message.find_first_not_of(" \t\v");
+//     if (nonspace != std::string::npos)
+//         message = message.substr(nonspace);
 
-    //COMMANDE PARSE
-    else if (isRegistered(fd) && commandParams.size())
-    {
-        //COMMANDE PARSE
-        //mettre un else if pour chaque commande
-        notifyUsers(ERR_UNKNOWNCOMMAND(getClientByFd(fd)->getNickname(), commandParts[1]), fd);
-    }
-    else if (!isRegistered(fd))
-        notifyUsers(ERR_NOTREGISTERED(std::string("*")), fd);
-}
+//     //COMMANDE PARSE
+//     else if (isRegistered(fd) && commandParams.size())
+//     {
+//         //COMMANDE PARSE
+//         //mettre un else if pour chaque commande
+//         notifyUsers(ERR_UNKNOWNCOMMAND(getClientByFd(fd)->getNickname(), commandParts[1]), fd);
+//     }
+//     else if (!isRegistered(fd))
+//         notifyUsers(ERR_NOTREGISTERED(std::string("*")), fd);
+// }
