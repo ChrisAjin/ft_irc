@@ -12,7 +12,12 @@ void Server::PASS(std::string message, int fd)
         ++it;
     if (it != message.end() && *it == ':')
         ++it;
+    if (it + 5 <= message.end()) {
     message = std::string(it + 5, message.end());
+    } else {
+        message.clear();
+    }
+
     if (message.empty())
     {
         notifyUsers(ERR_NOTENOUGHPARAMETERS(std::string("*")), fd);

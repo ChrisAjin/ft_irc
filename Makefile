@@ -10,7 +10,7 @@ HOBJS			=	$(INCS:includes/%.hpp)
 
 CC				=	c++
 RM				=	rm -rf
-CPPFLAGS		=	-std=c++98 -Wall -Wextra -Werror
+CPPFLAGS		=	-std=c++98 -Wall -Wextra -Werror -g3
 
 all:			$(NAME)
 

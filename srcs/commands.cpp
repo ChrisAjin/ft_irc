@@ -174,19 +174,24 @@ void Server::mode(int fd, const std::string &channelName, const std::string &mod
 
 void Server::processCommand(std::string &command, int fd)
 {
-    std::vector<std::string> commandParts = dissectMessage(command);
-    std::vector<std::string> commandParams = extractParams(command);
+    std::vector<std::string> commandParams;
+    std::vector<std::string> commandParts;
 
-    if (commandParts.size() < 2)
+    if (command.empty())
+        return;
+    commandParts = dissectMessage(command);
+
+    commandParams = extractParams(command);
+    if (commandParams.size() < 2)
     {
-        notifyUsers("Invalid command.\r\n", fd);
+        notifyUsers(ERR_NOTENOUGHPARAMETERS(std::string("*")), fd);
         return;
     }
-
     size_t nonspace = command.find_first_not_of(" \t\v");
     if (nonspace != std::string::npos)
         command = command.substr(nonspace);
-    std::string action = commandParts[1]; // The actual command (e.g., KICK, INVITE, etc.)
+    
+    //COMMANDE PARSE
     if ((commandParts[1] == "PASS" || commandParts[1] == "pass") && commandParams.size())
         PASS(command, fd);
     else if ((commandParts[1] == "NICK" || commandParts[1] == "nick") && commandParams.size())

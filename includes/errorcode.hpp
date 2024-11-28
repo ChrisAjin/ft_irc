@@ -63,7 +63,5 @@
 #define RPL_CREATIONTIME(client, channel, createdat) ": 329 " + client + " #" + channel + " " + createdat + "\r\n"
 #define RPL_CHANGEMODE(hostname, channel, mode, arguments) (":" + hostname + " MODE #" + channel + " " + mode + " " + arguments + "\r\n")
 #define RPL_INVITE(client, nickname, channel) (": 341 " + client + " invite " + nickname + " to #" + channel + "\r\n")
-#define RPL_PRIVMSGCHANNEL(hostname, ipaddress, receiver, message) (":" + hostname + "@" + ipaddress + " PRIVMSG " + "#" + receiver + " " + message + "\r\n")
-#define RPL_PRIVMSGUSER(hostname, ipaddress, receiver, message) (":" + hostname + "@" + ipaddress + " PRIVMSG " + receiver + " " + message + "\r\n")
 
 #endif // ERRORCODE_HPP
